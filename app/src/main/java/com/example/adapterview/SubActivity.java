@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 public class SubActivity extends AppCompatActivity {
     private EditText editTextID;
@@ -23,9 +24,20 @@ public class SubActivity extends AppCompatActivity {
         editTextID=findViewById(R.id.editViewId);
         editTextName=findViewById(R.id.editTextName);
         editTextPhone=findViewById(R.id.editTextPhone);
-        btnCancel=findViewById(R.id.buttonOK);
-        btnOk=findViewById(R.id.buttonCancel);
+        btnCancel=findViewById(R.id.buttonCancel);
+        btnOk=findViewById(R.id.buttonOK);
         imageView=findViewById(R.id.imageView2);
+
+        Intent intent= getIntent();
+        Bundle bundle=intent.getExtras();
+        if(bundle!=null){
+            int id=bundle.getInt("Id");
+            editTextID.setText(""+id);
+            String name=bundle.getString("Name");
+            editTextName.setText(name);
+            String phone=bundle.getString("Phone");
+            editTextPhone.setText(phone);
+        }
 
 
         btnOk.setOnClickListener(new View.OnClickListener() {
@@ -41,6 +53,13 @@ public class SubActivity extends AppCompatActivity {
                 bundle.putString("Phone",phone);
                 intent.putExtras(bundle);
                 setResult(150,intent);
+                finish();
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(151);
                 finish();
             }
         });

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/sortbyname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Sort by Name" />
+    <item
+        android:id="@+id/sortbyphone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Sort by Phone" />
+    <item
+        android:id="@+id/boardcast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Board cast" />
+</menu>

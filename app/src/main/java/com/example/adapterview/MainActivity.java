@@ -1,11 +1,16 @@
 package com.example.adapterview;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,17 +29,24 @@ public class MainActivity extends AppCompatActivity {
     protected EditText txtName;
     protected FloatingActionButton button;
     protected ListView lstStudent;
+    protected int SelectedId;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Bundle b = data.getExtras();
-        int id = b.getInt("Id");
-        String name = b.getString("Name");
-        String phone = b.getString("Phone");
-        Student st = new Student(id,"inae",name,phone);
-        if(requestCode==150){
+        if(requestCode==100 && resultCode==150){
+            Bundle b = data.getExtras();
+            int id = b.getInt("Id");
+            String name = b.getString("Name");
+            String phone = b.getString("Phone");
+            Student st = new Student(id,"inae",name,phone);
             arrayList.add(st);
+            adapter.notifyDataSetChanged();
+        }else if(requestCode==200 && resultCode==150){
+            Bundle b= data.getExtras();
+            Student student=arrayList.get(SelectedId);
+            student.setId(b.getInt("Id"));
+            student.setName(b.getString("Name"));
             adapter.notifyDataSetChanged();
         }
     }
@@ -54,19 +66,19 @@ public class MainActivity extends AppCompatActivity {
         arrayList.add(new Student(3,"img3","Chiến Trần","987686455"));
 
         adapter = new AdapterStudent(arrayList,this);
-
+        registerForContextMenu(lstStudent);
         lstStudent.setAdapter(adapter);
 
         button.setOnClickListener(v->{
-            arrayList.add(new Student(1,"img1",txtName.getText().toString(),"845398543"));
-            adapter.notifyDataSetChanged();
+//            arrayList.add(new Student(1,"img1",txtName.getText().toString(),"845398543"));
+//            adapter.notifyDataSetChanged();
             txtName.setText("");
 
             //tao intent de mo subactivity
             Intent intent = new Intent(MainActivity.this,SubActivity.class);
             //truyen du lieu sang subac bang bundle neu can
             //startactivity hoac startactivityforresult
-            startActivityForResult(intent,150);
+            startActivityForResult(intent,100);
         });
 
         lstStudent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,5 +89,59 @@ public class MainActivity extends AppCompatActivity {
                 adapter.notifyDataSetChanged();
             }
         });
+        lstStudent.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                SelectedId=position;
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = new MenuInflater(this);
+        inflater.inflate(R.menu.actionmenu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.sortbyname){
+            Toast.makeText(this,"Sort by name",Toast.LENGTH_SHORT).show();
+        } else if (item.getItemId()==R.id.sortbyphone) {
+            Toast.makeText(this,"Sort by phone",Toast.LENGTH_SHORT).show();
+        }else if(item.getItemId()==R.id.boardcast){
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater=new MenuInflater(this);
+        inflater.inflate(R.menu.contextmenu,menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.menuedit){
+            Toast.makeText(this, "ok", Toast.LENGTH_SHORT).show();
+            Student student=arrayList.get(SelectedId);
+            Intent intent= new Intent(MainActivity.this,SubActivity.class);
+            Bundle b=new Bundle();
+            b.putInt("Id",student.getId());
+            b.putString("Name",student.getName());
+            b.putString("Phone",student.getPhone());
+            intent.putExtras(b);
+            startActivityForResult(intent,200);
+
+        }
+        else if(item.getItemId()==R.id.menudelete){
+            arrayList.remove(SelectedId);
+            adapter.notifyDataSetChanged();
+        }
+        return super.onContextItemSelected(item);
     }
 }
