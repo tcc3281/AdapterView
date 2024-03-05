@@ -4,6 +4,7 @@ public class Student {
     private int id;
     private String images;
     private String name;
+    private String phone;
 
     public int getId() {
         return id;
@@ -37,7 +38,6 @@ public class Student {
         this.phone = phone;
     }
 
-    private String phone;
     public Student(){}
     public Student(int id, String images, String name, String phone) {
         this.id = id;

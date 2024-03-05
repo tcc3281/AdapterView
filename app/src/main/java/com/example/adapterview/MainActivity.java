@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.ContextMenu;
@@ -136,11 +137,19 @@ public class MainActivity extends AppCompatActivity {
             b.putString("Phone",student.getPhone());
             intent.putExtras(b);
             startActivityForResult(intent,200);
-
         }
         else if(item.getItemId()==R.id.menudelete){
             arrayList.remove(SelectedId);
             adapter.notifyDataSetChanged();
+        }
+        else if(item.getItemId()==R.id.menucall){
+            Student student= arrayList.get(SelectedId);
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+student.getPhone()));
+            startActivity(intent);
+        }else if(item.getItemId()==R.id.menusms){
+            Student student= arrayList.get(SelectedId);
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:"+student.getPhone()));
+            startActivity(intent);
         }
         return super.onContextItemSelected(item);
     }
