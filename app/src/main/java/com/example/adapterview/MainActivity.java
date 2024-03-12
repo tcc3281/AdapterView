@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     protected FloatingActionButton button;
     protected ListView lstStudent;
     protected int SelectedId;
+    private MyDB db;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -56,16 +57,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        db = new MyDB(this,"StudentDB",null,1);
+
+//        db.addStudent(new Student(1,"img1","Chiến Trấn","048934934"));
+//        db.addStudent(new Student(2,"img2","Chiến Tran","545434334"));
+//        db.addStudent(new Student(3,"img3","Chiến Trần","987686455"));
 
         txtName=findViewById(R.id.editTextText);
         button=findViewById(R.id.floatingActionButton2);
         lstStudent=findViewById(R.id.listview);
 
-        arrayList=new ArrayList();
-        arrayList.add(new Student(1,"img1","Chiến Trấn","048934934"));
-        arrayList.add(new Student(2,"img2","Chiến Tran","545434334"));
-        arrayList.add(new Student(3,"img3","Chiến Trần","987686455"));
-
+        arrayList=db.getAllStudents();
+        txtName.setText(arrayList.size()+"");
         adapter = new AdapterStudent(arrayList,this);
         registerForContextMenu(lstStudent);
         lstStudent.setAdapter(adapter);
@@ -97,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
     }
 
     @Override
@@ -148,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         }else if(item.getItemId()==R.id.menusms){
             Student student= arrayList.get(SelectedId);
-            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms:"+student.getPhone()));
+            Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("sms :"+student.getPhone()));
             startActivity(intent);
         }
         return super.onContextItemSelected(item);
